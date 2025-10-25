@@ -4,21 +4,29 @@ import java.net.Socket;
 
 public class WebServer {
     private ServerSocket serverSocket;
+    private Object lock;
 
     public WebServer(int port) {
         try {
             serverSocket = new ServerSocket(port);
+            lock = new Object();
         } catch(IOException ioe) {
             System.out.println("Server start error: " + ioe);
         }
     }
 
     public void startServer() {
-        try {
-            Socket socket = serverSocket.accept();
-            System.out.println(socket);
-        } catch(IOException ioe) {
-            System.out.println("Server start error: " + ioe);
+        while (true) {
+            try {
+                Socket socket = serverSocket.accept();
+                synchronized(lock) {
+                    Client client = new Client(socket);
+                    client.go();
+                }
+            } catch(IOException ioe) {
+                System.out.println("Socket error: " + ioe);
+            }
         }
     }
+
 }

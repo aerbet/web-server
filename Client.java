@@ -1,150 +1,99 @@
 import java.net.Socket;
+import java.net.URLDecoder;
 import java.io.InputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.BufferedOutputStream;
 
 public class Client implements Runnable {
-    private Socket clientSocket;
-    private Thread thread;
+  private Socket clientSocket;
+  private Thread thread;
 
-    public Client(Socket clientSocket) {
-        this.clientSocket = clientSocket;
-        thread = new Thread(this);
+  public Client(Socket clientSocket) {
+    this.clientSocket = clientSocket;
+    thread = new Thread(this);
+  }
+
+  public void run() {
+    try (
+        Socket socket = this.clientSocket;
+        InputStream in = socket.getInputStream()) {
+      StringBuilder request = new StringBuilder();
+      int c;
+
+      while ((c = in.read()) != -1) {
+        request.append((char) c);
+        if (in.available() == 0) {
+          break;
+        }
+      }
+
+      parseRequest(request, socket);
+    } catch (IOException ioe) {
+      System.out.println("Error: " + ioe);
     }
+  }
 
-    public void run() {
-        System.out.println("Proccessing client.");
-        System.out.println(clientSocket);
-        InputStream in = null;
-        try {
-            in = clientSocket.getInputStream();
-        } catch(IOException ioe) {
-            System.out.println("Error into InputStream: " + ioe);
+  public void go() {
+    thread.start();
+  }
+
+  public void parseRequest(StringBuilder request, Socket socket) {
+    try {
+      String httpRequest = request.toString();
+      String firstLine = httpRequest.split("\r\n")[0];
+      String[] requestParts = firstLine.split(" ");
+
+      if (requestParts.length < 2) {
+        NotFoundPage.sendNotFoundPage(socket);
+        return;
+      }
+
+      String method = requestParts[0];
+      String path = requestParts[1];
+
+      if (method.equals("POST") && path.equals("/login")) {
+        String[] parts = httpRequest.split("\r\n\r\n", 2);
+        String username = null;
+        String password = null;
+        String body;
+
+        if (parts.length > 1) {
+          body = parts[1];
+        } else {
+          body = "";
         }
 
-        while(true) {
-            try {
-                if (in != null) {
-                    int unicode = in.read();
-                    char symbol = (char)unicode;
-                    System.out.print(symbol);
-                    if(in.available() == 0) {
-                      break;
-                    }
-                }
-            } catch(IOException ioe) {
-                System.out.println("Error: " + ioe);
+        System.out.println("=== BODY ===");
+        System.out.println(body);
+
+        String[] params = body.split("&");
+
+        for (String param : params) {
+          String[] kv = param.split("=");
+          if (kv.length == 2) {
+            String key = URLDecoder.decode(kv[0], "UTF-8");
+            String value = URLDecoder.decode(kv[1], "UTF-8");
+            if ("username".equals(key)) {
+              username = value;
             }
+            if ("password".equals(key)) {
+              password = value;
+            }
+          }
         }
 
-        // System.out.println("All data has been red from User Agent");
-
-
-
-
-        try {
-          String message = "<h1>Hello, world from Erbol Zhaparov</h1>";
-          message = """
-                      <!DOCTYPE html>
-            <html lang="en">
-            <head>
-                <meta charset="UTF-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Login Form</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        min-height: 100vh;
-                        background-color: #f4f4f4;
-                        margin: 0;
-                    }
-                    .login-container {
-                        background-color: #fff;
-                        padding: 20px 30px;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                        width: 300px;
-                    }
-                    h2 {
-                        text-align: center;
-                        margin-bottom: 20px;
-                        color: #333;
-                    }
-                    .form-group {
-                        margin-bottom: 15px;
-                    }
-                    label {
-                        display: block;
-                        margin-bottom: 5px;
-                        color: #555;
-                    }
-                    input[type="text"],
-                    input[type="password"] {
-                        width: calc(100% - 20px); /* Adjust for padding */
-                        padding: 10px;
-                        border: 1px solid #ddd;
-                        border-radius: 4px;
-                        box-sizing: border-box; /* Include padding in width calculation */
-                    }
-                    button {
-                        width: 100%;
-                        padding: 10px;
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        cursor: pointer;
-                        font-size: 16px;
-                    }
-                    button:hover {
-                        background-color: #0056b3;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="login-container">
-                    <h2>Login</h2>
-                    <form action="/login" method="post">
-                        <div class="form-group">
-                            <label for="username">Username or Email:</label>
-                            <input type="text" id="username" name="username" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password:</label>
-                            <input type="password" id="password" name="password" required>
-                        </div>
-                        <button type="submit">Log In</button>
-                    </form>
-                </div>
-            </body>
-            </html>
-          """;
-          byte[] data = message.getBytes();
-          int fileLength = (int)message.length();
-
-          OutputStream out = clientSocket.getOutputStream();
-          PrintWriter printWriter = new PrintWriter(out, true);
-          printWriter.println("HTTP/1.1 200 OK");
-          printWriter.println("Server: Java HTTP Server from Intern Labs 7.0 - JBD");
-          printWriter.println("Content-type: " + "text/html");
-          printWriter.println("Content-length: " + fileLength);
-          printWriter.println();
-          printWriter.flush();
-
-          BufferedOutputStream dataOut = new BufferedOutputStream(out);
-          dataOut.write(data, 0, fileLength);
-          dataOut.flush();
-        } catch (IOException ioe) {
-          System.out.println("Error in Output Stream.");
+        if ("admin".equals(username) && "1234".equals(password)) {
+          WelcomePage.sendWelcomePage(socket);
+        } else {
+          ErrorPage.sendErrorPage(socket, "Invalid username or password");
         }
-    }
 
-    public void go() {
-        thread.start();
+      } else if (method.equals("GET") && (path.equals("/") || path.equals("/login"))) {
+        LoginPage.sendLoginPage(socket);
+      } else {
+        NotFoundPage.sendNotFoundPage(socket);
+      }
+    } catch (IOException ioe) {
+      System.out.println("Error: " + ioe);
     }
+  }
 }

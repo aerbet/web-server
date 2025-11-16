@@ -3,7 +3,8 @@ public class Main {
         int port = 8080;
         System.out.println("The server is running on port: " + port);
         WebServer webServer = new WebServer(port);
-
-        webServer.startServer();
+        webServer.go();
+        webServer.stopServer();
+        System.out.println("The Server has been stopped.");
     }
 }

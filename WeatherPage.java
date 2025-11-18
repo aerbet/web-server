@@ -253,7 +253,7 @@ public class WeatherPage {
                 }
                 const weather = data.list[0];
                 const desc = weather.weather[0].description;
-                const temp = Math.round(weather.main.temp) + "°C";
+                const temp = Math.round(weather.main.temp) + "\u00B0C";
                 const icon = weather.weather[0].icon;
                 todayInfo.querySelector("h2").textContent =
                   new Date(weather.dt * 1000).toLocaleDateString("en", { weekday: "long" });
@@ -288,7 +288,7 @@ public class WeatherPage {
                 sortedDays.forEach(item => {
                   const dt = new Date(item.dt_txt);
                   const day = dt.toLocaleDateString("en", { weekday: "short" });
-                  const temp2 = Math.round(item.main.temp) + "°C";
+                  const temp2 = Math.round(item.main.temp) + "\u00B0C";
                   const iCode = item.weather[0].icon;
                   daysList.innerHTML +=
                     "<li>" +

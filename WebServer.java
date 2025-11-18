@@ -12,7 +12,6 @@ public class WebServer implements Runnable {
     try {
       serverSocket = new ServerSocket(port);
       lock = new Object();
-      thread = new Thread(this);
     } catch (IOException ioe) {
       System.out.println("Server start error: " + ioe);
     }
@@ -37,6 +36,7 @@ public class WebServer implements Runnable {
   }
 
   public void go() {
+    thread = new Thread(this);
     thread.start();
   }
 

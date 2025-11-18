@@ -9,7 +9,6 @@ public class Client implements Runnable {
 
   public Client(Socket clientSocket) {
     this.clientSocket = clientSocket;
-    thread = new Thread(this);
   }
 
   public void run() {
@@ -33,6 +32,7 @@ public class Client implements Runnable {
   }
 
   public void go() {
+    thread = new Thread(this);
     thread.start();
   }
 

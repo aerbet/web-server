@@ -5,11 +5,11 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class HTMLResponse {
-    
-    private HTMLResponse() {
-    }
-    
-    public static void sendHtmlResponse(Socket clientSocket, String htmlContent) throws IOException {
+
+  private HTMLResponse() {
+  }
+
+  public static void sendHtmlResponse(Socket clientSocket, String htmlContent) throws IOException {
     byte[] data = htmlContent.getBytes("UTF-8");
     int fileLength = data.length;
 

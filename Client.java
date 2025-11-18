@@ -16,14 +16,13 @@ public class Client implements Runnable {
         InputStream in = socket.getInputStream()) {
       StringBuilder request = new StringBuilder();
       int c;
-
+      
       while ((c = in.read()) != -1) {
         request.append((char) c);
         if (in.available() == 0) {
           break;
         }
       }
-
       Request.parseRequest(request, socket);
     } catch (IOException ioe) {
       System.out.println("Error: " + ioe);

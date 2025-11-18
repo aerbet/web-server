@@ -15,54 +15,60 @@ public class RegisterPage {
             <title>Login Form</title>
             <style>
                 body {
-                    font-family: Arial, sans-serif;
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    min-height: 100vh;
-                    background-color: #f4f4f4;
-                    margin: 0;
+                  font-family: Arial, sans-serif;
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                  min-height: 100vh;
+                  background-color: #f4f4f4;
+                  margin: 0;
                 }
                 .login-container {
-                    background-color: #fff;
-                    padding: 20px 30px;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                    width: 300px;
+                  background-color: #fff;
+                  padding: 20px 30px;
+                  border-radius: 8px;
+                  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+                  width: 300px;
                 }
                 h2 {
-                    text-align: center;
-                    margin-bottom: 20px;
-                    color: #333;
+                  text-align: center;
+                  margin-bottom: 20px;
+                  color: #333;
                 }
                 .form-group {
-                    margin-bottom: 15px;
+                  margin-bottom: 15px;
                 }
                 label {
-                    display: block;
-                    margin-bottom: 5px;
-                    color: #555;
+                  display: block;
+                  margin-bottom: 5px;
+                  color: #555;
                 }
                 input[type="text"],
                 input[type="password"] {
-                    width: 100%;
-                    padding: 10px;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    box-sizing: border-box;
+                  width: 100%;
+                  padding: 10px;
+                  border: 1px solid #ddd;
+                  border-radius: 4px;
+                  box-sizing: border-box;
                 }
                 button {
-                    width: 100%;
-                    padding: 10px;
-                    background-color: #5fb300ff;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;
-                    font-size: 16px;
+                  width: 100%;
+                  padding: 10px;
+                  background-color: #5fb300ff;
+                  color: white;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  font-size: 16px;
                 }
                 button:hover {
-                    background-color: #70b620ff;
+                  background-color: #70b620ff;
+                }
+                .back {
+                  display: block;
+                  margin-top: 20px;
+                  text-align: center;
+                  color: black;
                 }
             </style>
           </head>
@@ -80,6 +86,8 @@ public class RegisterPage {
                 </div>
                 <button type="submit">Register</button>
               </form>
+
+              <a href="/login" class="back">Back to Login page</a>
             </div>
           </body>
           </html>

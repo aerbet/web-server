@@ -28,8 +28,6 @@ public class Request {
         if (parts.length > 1) {
           body = parts[1];
         }
-        System.out.println("=== BODY ===");
-        System.out.println(body);
       }
 
       if (method.equals("POST") && path.equals("/login")) {
